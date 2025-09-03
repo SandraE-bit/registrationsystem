@@ -1,4 +1,4 @@
-fetch("http://localhost:7071/api/RegisterVisitor",{
+fetch("https://registration-function-g3hpc7fybuggb0ev.swedencentral-01.azurewebsites.net/api/RegisterVisitor",{
 method: "POST",
 headers: {"content-Type": "application/json"},
 body: JSON.stringify(data)
