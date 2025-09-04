@@ -21,21 +21,20 @@ public class RegisterVisitor
         var connection = Environment.GetEnvironmentVariable("CosmosDbConnection");
 
         CosmosClient client = new CosmosClient(connection);
-        Database db = client.GetDatabase("SampleDB");
-        Container container = db.GetContainer("SampleContainer");
+        Database db = client.GetDatabase("RegistrationDB");
+        Container container = db.GetContainer("RegistrationContainer");
 
         string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-        dynamic data = JsonConvert.DeserializeObject<Visitor>(requestBody);
-        string? name = data?.name;
+        var data = JsonConvert.DeserializeObject<Visitor>(requestBody);
 
-        var registration = new Visitor
+        var visitor = new Visitor
         {
             Id = Guid.NewGuid().ToString(),
-            Name = name,
+            Name = data.Name,
             Timestamp = DateTime.UtcNow,
         };
 
-        await container.CreateItemAsync(registration);
+        await container.CreateItemAsync(visitor, new PartitionKey(visitor.Id));
 
         var response = req.CreateResponse(HttpStatusCode.OK);
         await response.WriteStringAsync("You are now registered!");
