@@ -12,7 +12,6 @@ public static class RegisterVisitor
 {
     private static readonly CosmosClient _cosmosClient;
     private static readonly Container _container;
-    private static string connectionString;
 
     static RegisterVisitor()
     {
@@ -23,7 +22,7 @@ public static class RegisterVisitor
 
     [Function("RegisterVisitor")]
     public static async Task<IActionResult> Run(
-        [HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequest req,
+        [HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequest req,
         ILogger log
     )
     {
