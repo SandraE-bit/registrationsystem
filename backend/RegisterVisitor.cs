@@ -1,5 +1,4 @@
 using System.Net;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
@@ -13,8 +12,8 @@ public class RegisterVisitor
     [Function("RegisterVisitor")]
     public async Task<HttpResponseData> Run(
         [HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData req,
-        FunctionContext context)
-
+        FunctionContext context
+    )
     {
         var logger = context.GetLogger("RegisterVisitor");
         logger.LogInformation("function processed a request.");
@@ -26,14 +25,14 @@ public class RegisterVisitor
         Container container = db.GetContainer("SampleContainer");
 
         string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-        dynamic data = JsonConvert.DeserializeObject(requestBody);
+        dynamic data = JsonConvert.DeserializeObject<Visitor>(requestBody);
         string? name = data?.name;
 
         var registration = new Visitor
         {
             Id = Guid.NewGuid().ToString(),
             Name = name,
-            Timestamp = DateTime.UtcNow
+            Timestamp = DateTime.UtcNow,
         };
 
         await container.CreateItemAsync(registration);
@@ -42,8 +41,8 @@ public class RegisterVisitor
         await response.WriteStringAsync("You are now registered!");
         return response;
     }
-
 }
+
 public class Visitor
 {
     public string? Id { get; set; }
