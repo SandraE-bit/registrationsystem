@@ -1,4 +1,3 @@
-using System.Text.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Cosmos;
@@ -32,9 +31,13 @@ public static class RegisterVisitor
         dynamic data = JsonConvert.DeserializeObject(requestBody);
         string? name = data?.name;
 
-        var visitor = new { id = Guid.NewGuid().ToString() };
-
-        await _container.CreateItemAsync(visitor);
+        var visitor = new
+        {
+            id = Guid.NewGuid().ToString(),
+            name = name,
+            timestamp = DateTime.UtcNow
+        };
+        await _container.CreateItemAsync(visitor, new PartitionKey(visitor.id));
 
         return new OkObjectResult("You are now registered");
     }
