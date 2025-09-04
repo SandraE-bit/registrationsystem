@@ -1,44 +1,52 @@
-using Microsoft.AspNetCore.Http;
+using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Functions.Worker;
+using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
 namespace backend;
 
-public static class RegisterVisitor
+public class RegisterVisitor
 {
-    private static readonly CosmosClient _cosmosClient;
-    private static readonly Container _container;
-
-    static RegisterVisitor()
-    {
-        string connectionString = Environment.GetEnvironmentVariable("CosmosDbConnection");
-        _cosmosClient = new CosmosClient(connectionString);
-        _container = _cosmosClient.GetContainer("SampleDB", "SampleContainer");
-    }
-
     [Function("RegisterVisitor")]
-    public static async Task<IActionResult> Run(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequest req,
-        ILogger log
-    )
+    public async Task<HttpResponseData> Run(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData req,
+        FunctionContext context)
+
     {
-        log.LogInformation("C# HTTP trigger function processed a request.");
+        var logger = context.GetLogger("RegisterVisitor");
+        logger.LogInformation("function processed a request.");
+
+        var connection = Environment.GetEnvironmentVariable("CosmosDbConnection");
+
+        CosmosClient client = new CosmosClient(connection);
+        Database db = client.GetDatabase("SampleDB");
+        Container container = db.GetContainer("SampleContainer");
 
         string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
         dynamic data = JsonConvert.DeserializeObject(requestBody);
         string? name = data?.name;
 
-        var visitor = new
+        var registration = new Visitor
         {
-            id = Guid.NewGuid().ToString(),
-            name = name,
-            timestamp = DateTime.UtcNow
+            Id = Guid.NewGuid().ToString(),
+            Name = name,
+            Timestamp = DateTime.UtcNow
         };
-        await _container.CreateItemAsync(visitor, new PartitionKey(visitor.id));
 
-        return new OkObjectResult("You are now registered");
+        await container.CreateItemAsync(registration);
+
+        var response = req.CreateResponse(HttpStatusCode.OK);
+        await response.WriteStringAsync("You are now registered!");
+        return response;
     }
+
+}
+public class Visitor
+{
+    public string? Id { get; set; }
+    public string? Name { get; set; }
+    public DateTime Timestamp { get; set; }
 }
