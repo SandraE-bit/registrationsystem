@@ -7,3 +7,4 @@ body: JSON.stringify(data)
 .then(res => res.text())
 .then(data => console.log("Success:", data))
 .catch(err => console.error(err));
+document.getElementById("result").textContent = await response.text();
