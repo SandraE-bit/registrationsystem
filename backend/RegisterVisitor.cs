@@ -57,7 +57,7 @@ public class RegisterVisitor
         var visitor = await _visitorService.AddVisitorAsync(name);
 
         var response = req.CreateResponse(HttpStatusCode.OK);
-        await response.WriteStringAsync($"You are registered! Id={visitor.Id}");
+        await response.WriteStringAsync($"You are registered! id={visitor.Id}");
         return response;
     }
 }
