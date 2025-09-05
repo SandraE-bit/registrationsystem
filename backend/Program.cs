@@ -1,20 +1,27 @@
+using backend.Models;
+using backend.Services;
+using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Functions.Worker;
-using Microsoft.Azure.Functions.Worker.Builder;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-var builder = FunctionsApplication.CreateBuilder(args);
-
-builder.Services.AddCors(options =>
-{
-    options.AddDefaultPolicy(policy =>
+var host = new HostBuilder()
+    .ConfigureFunctionsWebApplication()
+    .ConfigureAppConfiguration(config =>
     {
-        policy.WithOrigins("https://sandrae-bit.github.io").AllowAnyHeader().AllowAnyMethod();
-    });
-});
+        config.AddEnvironmentVariables();
+    })
+    .ConfigureServices((context, services) =>
+        {
+            services.Configure<Settings.Configuration>(context.Configuration);
 
-builder
-    .Services.AddApplicationInsightsTelemetryWorkerService()
-    .ConfigureFunctionsApplicationInsights();
+            var cosmosConn = context.Configuration["cosmosdb"];
+            services.AddSingleton(new CosmosClient(cosmosConn));
 
-builder.Build().Run();
+            services.AddSingleton<VisitorService>();
+        }
+    )
+    .Build();
+
+host.Run();
