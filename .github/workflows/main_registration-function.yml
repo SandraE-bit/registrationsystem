@@ -10,7 +10,6 @@ on:
   workflow_dispatch:
 
 env:
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: "backend"
   DOTNET_VERSION: "8.0.x"
 
 jobs:
@@ -26,24 +25,13 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
-      - name: Build with dotnet
-        run: dotnet build backend/backend.csproj --configuration Release
+      - name: Build and publish Function App
+        run: dotnet publish backend/backend.csproj -c Release -o ./publish
 
-      - name: Publish
-        run: dotnet publish backend/backend.csproj -c Release -o ./output
-
-      - name: "Resolve Project Dependencies Using Dotnet"
-        shell: pwsh
-        run: |
-          pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
-          dotnet build --configuration Release --output ./output
-          popd
-
-      - name: "Run Azure Functions Action"
+      - name: "Deploy to Azure Function App"
         uses: Azure/functions-action@v1
-        id: fa
         with:
           app-name: "registration-Function"
           slot-name: "Production"
-          package: "${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output"
+          package: "./publish"
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_F8F387D1C6C948988CC373261C755995 }}
