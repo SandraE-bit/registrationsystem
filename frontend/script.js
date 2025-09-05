@@ -16,8 +16,8 @@ document.getElementById("send").addEventListener("click", function()
     .then(function(data)
     {
         document.getElementById("result").textContent = data;
-        document.getElementById("fnamne").value = "";
-        document.getElementById("lnamne").value = "";
+        document.getElementById("fname").value = "";
+        document.getElementById("lname").value = "";
     })
 
     .catch(function(err)
