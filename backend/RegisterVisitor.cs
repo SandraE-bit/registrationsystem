@@ -21,7 +21,8 @@ public class RegisterVisitor
 
     [Function("RegisterVisitor")]
     public async Task<HttpResponseData> Run(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData req)
+        [HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData req
+    )
     {
         _logger.LogInformation("RegisterVisitor function processed a request.");
 
