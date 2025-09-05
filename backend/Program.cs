@@ -7,21 +7,20 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 var host = new HostBuilder()
-    .ConfigureFunctionsWebApplication()
+    .ConfigureFunctionsWorkerDefaults() 
     .ConfigureAppConfiguration(config =>
     {
         config.AddEnvironmentVariables();
     })
     .ConfigureServices((context, services) =>
-        {
-            services.Configure<Settings.Configuration>(context.Configuration);
+    {
+        services.Configure<Settings.Configuration>(context.Configuration);
 
-            var cosmosConn = context.Configuration["cosmosdb"];
-            services.AddSingleton(new CosmosClient(cosmosConn));
+        var cosmosConn = context.Configuration["COSMOS_CONN"];
+        services.AddSingleton(new CosmosClient(cosmosConn));
 
-            services.AddSingleton<VisitorService>();
-        }
-    )
+        services.AddSingleton<VisitorService>();
+    })
     .Build();
 
 host.Run();
