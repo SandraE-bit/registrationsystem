@@ -5,7 +5,7 @@ document.getElementById("send").addEventListener("click", function()
 
     var data = { name: fname + " " + lname }
 
-    fetch("https://registration-function-gcdmcdeydhdchvd4.swedencentral-01.azurewebsites.net/api/RegisterVisitor",
+    fetch("https://registration-function-g3hpc7fybuggb0ev.swedencentral-01.azurewebsites.net/api/RegisterVisitor",
     {
         method: "POST",
         headers: {"content-Type": "application/json"},
