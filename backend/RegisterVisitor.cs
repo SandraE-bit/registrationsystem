@@ -31,7 +31,7 @@ public class RegisterVisitor
         if (string.IsNullOrWhiteSpace(body))
         {
             var badResponse = req.CreateResponse(HttpStatusCode.BadRequest);
-            await badResponse.WriteStringAsync("Du måste skicka med ett namn i request body.");
+            await badResponse.WriteStringAsync("Send a name in request body.");
             return badResponse;
         }
 
@@ -43,21 +43,21 @@ public class RegisterVisitor
         catch
         {
             var badResponse = req.CreateResponse(HttpStatusCode.BadRequest);
-            await badResponse.WriteStringAsync("Felaktig JSON.");
+            await badResponse.WriteStringAsync("Error JSON.");
             return badResponse;
         }
 
         if (!data.TryGetValue("name", out var name) || string.IsNullOrWhiteSpace(name))
         {
             var badResponse = req.CreateResponse(HttpStatusCode.BadRequest);
-            await badResponse.WriteStringAsync("Namn saknas.");
+            await badResponse.WriteStringAsync("Name missing.");
             return badResponse;
         }
 
         var visitor = await _visitorService.AddVisitorAsync(name);
 
         var response = req.CreateResponse(HttpStatusCode.OK);
-        await response.WriteStringAsync($"Du är nu registrerad! Id={visitor.Id}");
+        await response.WriteStringAsync($"You are registered! Id={visitor.Id}");
         return response;
     }
 }
