@@ -18,7 +18,7 @@ public class RegisterVisitor
         var logger = context.GetLogger("RegisterVisitor");
         logger.LogInformation("function processed a request.");
 
-        var connection = Environment.GetEnvironmentVariable("CosmosDbConnection");
+        var connection = Environment.GetEnvironmentVariable("cosmosdb");
 
         if (string.IsNullOrWhiteSpace(connection))
         {
@@ -28,8 +28,8 @@ public class RegisterVisitor
         }
 
         CosmosClient client = new CosmosClient(connection);
-        Database db = client.GetDatabase("RegistrationDB");
-        Container container = db.GetContainer("RegistrationContainer");
+        Database db = client.GetDatabase("usersdb");
+        Container container = db.GetContainer("users");
 
         string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
         var data = JsonConvert.DeserializeObject<string>(requestBody);
