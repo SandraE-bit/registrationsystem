@@ -1,29 +1,23 @@
-document.getElementById("send").addEventListener("click", function()
-{
-    var fname = document.getElementById("fname").value;
-    var lname = document.getElementById("lname").value;
+async function registerVisitor() {
+    const name = document.getElementById("nameInput").value;
 
-    var data = { name: fname + " " + lname }
+    try {
+        const response = await fetch("https://registration-function-g3hpc7fybuggb0ev.swedencentral-01.azurewebsites.net/api/RegisterVisitor", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name })
+        });
 
-    fetch("https://registration-function-g3hpc7fybuggb0ev.swedencentral-01.azurewebsites.net/api/RegisterVisitor",
-    {
-        method: "POST",
-        headers: {"content-Type": "application/json"},
-        body: JSON.stringify(data)
-    })
+        const result = await response.text();
+        alert(result);
+    } catch (err) {
+        console.error("Fel vid registrering:", err);
+        alert("Det gick inte att registrera besökare.");
+    }
+}
 
-    .then(function(res) { return res.text(); })
-    .then(function(data)
-    {
-        document.getElementById("result").textContent = data;
-        document.getElementById("fname").value = "";
-        document.getElementById("lname").value = "";
-    })
+document.getElementById("registerBtn").addEventListener("click", registerVisitor);
 
-    .catch(function(err)
-    {
-        document.getElementById("result").textContent = "Error";
-        console.log(err);
-    });
 
-});
+
+

@@ -1,33 +1,30 @@
 using backend.Models;
 using Microsoft.Azure.Cosmos;
-using Microsoft.Extensions.Options;
 
 namespace backend.Services;
 
-public sealed class VisitorService
+public class VisitorService
 {
-    private readonly CosmosClient _client;
-    private readonly Settings.Configuration _config;
+    private readonly Container _container;
 
-    public VisitorService(CosmosClient client, IOptions<Settings.Configuration> configOptions)
+    public VisitorService(CosmosClient client)
     {
-        _client = client;
-        _config = configOptions.Value;
+        var database = client.GetDatabase("usersdb");
+        _container = database.GetContainer("users");
     }
 
     public async Task<Visitor> AddVisitorAsync(string name)
     {
-        var db = _client.GetDatabase(_config.CosmosDB.DatabaseName);
-        var container = db.GetContainer(_config.CosmosDB.ContainerName);
+        var visitor = new Visitor { Id = Guid.NewGuid().ToString(), Name = name };
 
-        var visitor = new Visitor
-        {
-            Id = Guid.NewGuid().ToString(),
-            Name = name,
-            Timestamp = DateTime.UtcNow
-        };
+        await _container.CreateItemAsync(visitor, new PartitionKey(visitor.Id));
 
-        await container.CreateItemAsync(visitor, new PartitionKey(visitor.Id));
         return visitor;
     }
+}
+
+public class Visitor
+{
+    public string Id { get; set; } = "";
+    public string Name { get; set; } = "";
 }

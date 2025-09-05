@@ -24,26 +24,40 @@ public class RegisterVisitor
         [HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData req
     )
     {
-        _logger.LogInformation("RegisterVisitor function processed a request.");
+        _logger.LogInformation("RegisterVisitor function called.");
 
         var body = await new StreamReader(req.Body).ReadToEndAsync();
-        var json = JsonSerializer.Deserialize<Dictionary<string, string>>(body);
 
-        if (
-            json == null
-            || !json.TryGetValue("name", out var name)
-            || string.IsNullOrWhiteSpace(name)
-        )
+        if (string.IsNullOrWhiteSpace(body))
         {
             var badResponse = req.CreateResponse(HttpStatusCode.BadRequest);
-            await badResponse.WriteStringAsync("Missing 'name' in request body.");
+            await badResponse.WriteStringAsync("Du måste skicka med ett namn i request body.");
+            return badResponse;
+        }
+
+        Dictionary<string, string>? data;
+        try
+        {
+            data = JsonSerializer.Deserialize<Dictionary<string, string>>(body);
+        }
+        catch
+        {
+            var badResponse = req.CreateResponse(HttpStatusCode.BadRequest);
+            await badResponse.WriteStringAsync("Felaktig JSON.");
+            return badResponse;
+        }
+
+        if (!data.TryGetValue("name", out var name) || string.IsNullOrWhiteSpace(name))
+        {
+            var badResponse = req.CreateResponse(HttpStatusCode.BadRequest);
+            await badResponse.WriteStringAsync("Namn saknas.");
             return badResponse;
         }
 
         var visitor = await _visitorService.AddVisitorAsync(name);
 
         var response = req.CreateResponse(HttpStatusCode.OK);
-        await response.WriteStringAsync($"You are now registered! Id={visitor.Id}");
+        await response.WriteStringAsync($"Du är nu registrerad! Id={visitor.Id}");
         return response;
     }
 }
