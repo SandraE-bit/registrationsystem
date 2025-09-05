@@ -25,8 +25,8 @@ public class RegisterVisitor
         Container container = db.GetContainer("RegistrationContainer");
 
         string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-        var data = JsonConvert.DeserializeObject<Visitor>(requestBody);
-        if (data?.Name == null)
+        var data = JsonConvert.DeserializeObject<string>(requestBody);
+        if (data == null)
 {
             var resp = req.CreateResponse(HttpStatusCode.BadRequest);
             await resp.WriteStringAsync("Missing 'name' in request body.");
@@ -35,7 +35,7 @@ public class RegisterVisitor
         var visitor = new Visitor
         {
             Id = Guid.NewGuid().ToString(),
-            Name = data.Name,
+            Name = data,
             Timestamp = DateTime.UtcNow,
         };
 
