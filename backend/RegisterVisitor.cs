@@ -26,7 +26,12 @@ public class RegisterVisitor
 
         string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
         var data = JsonConvert.DeserializeObject<Visitor>(requestBody);
-
+        if (data?.Name == null)
+{
+            var resp = req.CreateResponse(HttpStatusCode.BadRequest);
+            await resp.WriteStringAsync("Missing 'name' in request body.");
+            return resp;
+}
         var visitor = new Visitor
         {
             Id = Guid.NewGuid().ToString(),
