@@ -27,11 +27,11 @@ public class RegisterVisitor
         string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
         var data = JsonConvert.DeserializeObject<string>(requestBody);
         if (data == null)
-{
+        {
             var resp = req.CreateResponse(HttpStatusCode.BadRequest);
             await resp.WriteStringAsync("Missing 'name' in request body.");
             return resp;
-}
+        }
         var visitor = new Visitor
         {
             Id = Guid.NewGuid().ToString(),
