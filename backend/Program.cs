@@ -13,8 +13,6 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.ConfigureFunctionsWebApplication();
-
 builder
     .Services.AddApplicationInsightsTelemetryWorkerService()
     .ConfigureFunctionsApplicationInsights();
