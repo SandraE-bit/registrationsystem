@@ -13,13 +13,13 @@ var host = new HostBuilder()
         config.AddEnvironmentVariables();
     })
     .ConfigureServices((context, services) =>
-    {
-        services.Configure<Settings.Configuration>(context.Configuration);
+        {
+            services.Configure<Settings.Configuration>(context.Configuration);
 
-        var cosmosConn = context.Configuration["COSMOS_CONN"];
-        services.AddSingleton(new CosmosClient(cosmosConn));
+            var cosmosConn = context.Configuration["COSMOS_CONN"];
+            services.AddSingleton(new CosmosClient(cosmosConn));
 
-        services.AddSingleton<VisitorService>();
+            services.AddSingleton<VisitorService>();
     })
     .Build();
 
