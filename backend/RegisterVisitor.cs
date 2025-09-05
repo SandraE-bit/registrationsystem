@@ -20,6 +20,13 @@ public class RegisterVisitor
 
         var connection = Environment.GetEnvironmentVariable("CosmosDbConnection");
 
+        if (string.IsNullOrWhiteSpace(connection))
+        {
+            var resp = req.CreateResponse(HttpStatusCode.InternalServerError);
+            await resp.WriteStringAsync("CosmosDbConnection is not set!");
+            return resp;
+        }
+
         CosmosClient client = new CosmosClient(connection);
         Database db = client.GetDatabase("RegistrationDB");
         Container container = db.GetContainer("RegistrationContainer");
