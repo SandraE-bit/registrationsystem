@@ -11,17 +11,18 @@ button.addEventListener("click", async function () {
         return;
     }
 
+    const data = { Name: fullName };
+
     try {
         const response = await fetch("https://registration-function-g3hpc7fybuggb0ev.swedencentral-01.azurewebsites.net/api/RegisterVisitor", {
             method: "POST",
             headers: {
-                "Content-Type": "text/plain"
+                "Content-Type": "application/json"
             },
-            body: fullName
+            body: JSON.stringify(data)
         });
 
         const result = await response.text();
-
         document.getElementById("result").innerText = result;
 
     } catch (error) {
@@ -29,6 +30,7 @@ button.addEventListener("click", async function () {
         alert("error visitor");
     }
 });
+
 
 
 
