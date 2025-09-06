@@ -18,8 +18,6 @@ public class RegisterVisitor
         var logger = context.GetLogger("RegisterVisitor");
 
         var connection = Environment.GetEnvironmentVariable("COSMOS_CONN");
-        logger.LogInformation($"COSMOS_CONN = {(connection ?? "NULL")}");
-
         if (string.IsNullOrWhiteSpace(connection))
         {
             var errorResp = req.CreateResponse(HttpStatusCode.InternalServerError);
@@ -27,38 +25,50 @@ public class RegisterVisitor
             return errorResp;
         }
 
-        var client = new CosmosClient(connection);
-        var db = client.GetDatabase("usersdb");
-        var container = db.GetContainer("users");
+        string body = await new StreamReader(req.Body).ReadToEndAsync();
+        logger.LogInformation($"Received body: {body}");
 
-        string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-        var data = JsonConvert.DeserializeObject<string>(requestBody);
+        var payload = JsonConvert.DeserializeObject<VisitorPayload>(body);
 
-        if (string.IsNullOrWhiteSpace(data))
+        if (payload == null || string.IsNullOrWhiteSpace(payload.Name))
         {
-            var errorResp = req.CreateResponse(HttpStatusCode.BadRequest);
-            await errorResp.WriteStringAsync("Missing 'name' in request body.");
-            return errorResp;
+            var badResp = req.CreateResponse(HttpStatusCode.BadRequest);
+            await badResp.WriteStringAsync("Missing 'name' in request body.");
+            return badResp;
         }
+
+        var client = new CosmosClient(connection);
+        var container = client.GetContainer("usersdb", "users");
 
         var visitor = new Visitor
         {
             Id = Guid.NewGuid().ToString(),
-            Name = data,
-            Timestamp = DateTime.UtcNow
+            Name = payload.Name,
+            Timestamp = DateTime.UtcNow,
         };
 
         await container.CreateItemAsync(visitor, new PartitionKey(visitor.Id));
 
         var response = req.CreateResponse(HttpStatusCode.OK);
-        await response.WriteStringAsync("You are now registered!");
+        await response.WriteStringAsync($"Registered visitor: {visitor.Name} with Id {visitor.Id}");
         return response;
     }
 }
 
+public class VisitorPayload
+{
+    [JsonProperty("name")]
+    public string Name { get; set; } = "";
+}
+
 public class Visitor
 {
-    public string? Id { get; set; }
-    public string? Name { get; set; }
+    [JsonProperty("id")]
+    public string Id { get; set; } = "";
+
+    [JsonProperty("name")]
+    public string Name { get; set; } = "";
+
+    [JsonProperty("timestamp")]
     public DateTime Timestamp { get; set; }
 }
