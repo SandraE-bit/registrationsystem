@@ -54,7 +54,7 @@ public class RegisterVisitor
         logger.LogInformation($"Visitor registered: {visitor.Name} ({visitor.Id})");
 
         var response = req.CreateResponse(HttpStatusCode.OK);
-        await response.WriteStringAsync($"Registered visitor: {visitor.Name} with Id {visitor.Id}");
+        await response.WriteStringAsync($"Registered visitor: {visitor.Name}");
         return response;
     }
 }
