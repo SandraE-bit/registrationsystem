@@ -1,7 +1,6 @@
 const button = document.getElementById("registerBtn");
 
-button.addEventListener("click", async function() {
-
+button.addEventListener("click", async function () {
     const firstName = document.getElementById("fname").value;
     const lastName = document.getElementById("lname").value;
 
@@ -9,20 +8,20 @@ button.addEventListener("click", async function() {
 
     if (fullName.trim() === "") {
         alert("First name and lastname");
-        return; 
+        return;
     }
 
     try {
-         const response = await fetch("https://registration-function-g3hpc7fybuggb0ev.swedencentral-01.azurewebsites.net/api/RegisterVisitor", {
+        const response = await fetch("https://registration-function-g3hpc7fybuggb0ev.swedencentral-01.azurewebsites.net/api/RegisterVisitor", {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "text/plain"
             },
-            body: JSON.stringify({ name: fullName })
+            body: fullName
         });
-        
+
         const result = await response.text();
-       
+
         document.getElementById("result").innerText = result;
 
     } catch (error) {
@@ -30,6 +29,7 @@ button.addEventListener("click", async function() {
         alert("error visitor");
     }
 });
+
 
 
 

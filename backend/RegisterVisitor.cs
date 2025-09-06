@@ -1,5 +1,4 @@
 using System.Net;
-using System.Text.Json;
 using backend.Services;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
@@ -21,19 +20,18 @@ public class RegisterVisitor
     )
     {
         var body = await new StreamReader(req.Body).ReadToEndAsync();
-        var data = JsonSerializer.Deserialize<Dictionary<string, string>>(body);
 
-        if (data == null || !data.ContainsKey("name"))
+        if (string.IsNullOrWhiteSpace(body))
         {
             var badResponse = req.CreateResponse(HttpStatusCode.BadRequest);
             await badResponse.WriteStringAsync("Missing name in request body.");
             return badResponse;
         }
 
-        var visitor = await _visitorService.AddVisitorAsync(data["name"]);
+        var visitor = await _visitorService.AddVisitorAsync(body.Trim());
 
         var response = req.CreateResponse(HttpStatusCode.OK);
-        await response.WriteAsJsonAsync(visitor);
+        await response.WriteStringAsync($"Visitor registered: {visitor.Name}");
         return response;
     }
 }
