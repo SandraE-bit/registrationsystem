@@ -11,7 +11,7 @@ button.addEventListener("click", async function () {
         return;
     }
 
-    const data = { Name: fullName };
+    const data = { name: fullName };
 
     try {
         const response = await fetch("https://registration-function-g3hpc7fybuggb0ev.swedencentral-01.azurewebsites.net/api/RegisterVisitor", {
