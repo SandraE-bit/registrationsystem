@@ -9,9 +9,7 @@ var host = new HostBuilder()
     .ConfigureServices(
         (context, services) =>
         {
-            var cosmosClient = new CosmosClient(
-                Environment.GetEnvironmentVariable("CosmosDbConnectionString")
-            );
+            var cosmosClient = new CosmosClient(Environment.GetEnvironmentVariable("COSMOS_CONN"));
             services.AddSingleton(cosmosClient);
             services.AddSingleton<VisitorService>();
         }
