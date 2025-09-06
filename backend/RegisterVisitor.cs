@@ -34,8 +34,11 @@ public class RegisterVisitor
         {
             var badResp = req.CreateResponse(HttpStatusCode.BadRequest);
             await badResp.WriteStringAsync("Missing 'name' in request body.");
+            logger.LogWarning("Bad request: missing 'name'");
             return badResp;
         }
+
+        logger.LogInformation($"Registering visitor: {payload.Name}");
 
         var client = new CosmosClient(connection);
         var container = client.GetContainer("usersdb", "users");
@@ -48,6 +51,7 @@ public class RegisterVisitor
         };
 
         await container.CreateItemAsync(visitor, new PartitionKey(visitor.Id));
+        logger.LogInformation($"Visitor registered: {visitor.Name} ({visitor.Id})");
 
         var response = req.CreateResponse(HttpStatusCode.OK);
         await response.WriteStringAsync($"Registered visitor: {visitor.Name} with Id {visitor.Id}");
