@@ -2,17 +2,14 @@ using Newtonsoft.Json;
 
 namespace backend.Models;
 
-public partial class Article
+public class Visitor
 {
     [JsonProperty("id")]
-    public string Id { get; set; } = Guid.NewGuid().ToString();
+    public string Id { get; set; } = default!;
 
-    [JsonProperty("createdBy")]
-    public Guid CreatedBy { get; set; }
+    [JsonProperty("name")]
+    public string? Name { get; set; }
 
-    [JsonProperty("createdOn")]
-    public DateTime CreatedOn { get; set; }
-
-    [JsonProperty("body")]
-    public string Body { get; set; } = "";
+    [JsonProperty("timestamp")]
+    public DateTime Timestamp { get; set; }
 }

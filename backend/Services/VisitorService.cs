@@ -15,16 +15,14 @@ public class VisitorService
 
     public async Task<Visitor> AddVisitorAsync(string name)
     {
-        var visitor = new Visitor { Id = Guid.NewGuid().ToString(), Name = name };
+        var visitor = new Visitor
+        {
+            Id = Guid.NewGuid().ToString(),
+            Name = name,
+            Timestamp = DateTime.UtcNow,
+        };
 
         await _container.CreateItemAsync(visitor, new PartitionKey(visitor.Id));
-
         return visitor;
     }
-}
-
-public class Visitor
-{
-    public string Id { get; set; } = "";
-    public string Name { get; set; } = "";
 }
