@@ -9,7 +9,7 @@ The function receives the data and saves it into a Cosmos DB database.
 The user gets a response back and it shows on the web page.
 All logs are sent to Application Insights so I can see what is happening.
 
-Technologies:
+Frameworks and Tools:
 
 Frontend: HTML + JavaScript hosted on GitHub Pages
 Backend: Azure Functions C# .NET
