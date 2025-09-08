@@ -21,7 +21,7 @@ public class RegisterVisitor
         if (string.IsNullOrWhiteSpace(connection))
         {
             var errorResp = req.CreateResponse(HttpStatusCode.InternalServerError);
-            await errorResp.WriteStringAsync("Cosmos connection string is missing!");
+            await errorResp.WriteStringAsync("Connection string is missing!");
             return errorResp;
         }
 
@@ -33,8 +33,8 @@ public class RegisterVisitor
         if (payload == null || string.IsNullOrWhiteSpace(payload.Name))
         {
             var badResp = req.CreateResponse(HttpStatusCode.BadRequest);
-            await badResp.WriteStringAsync("Missing 'name' in request body.");
-            logger.LogWarning("Bad request: missing 'name'");
+            await badResp.WriteStringAsync("name is missing in request body.");
+            logger.LogWarning("Bad request: missing name");
             return badResp;
         }
 
