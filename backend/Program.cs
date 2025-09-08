@@ -1,4 +1,3 @@
-using backend.Services;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,7 +10,6 @@ var host = new HostBuilder()
         {
             var cosmosClient = new CosmosClient(Environment.GetEnvironmentVariable("COSMOS_CONN"));
             services.AddSingleton(cosmosClient);
-            services.AddSingleton<VisitorService>();
         }
     )
     .Build();
