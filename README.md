@@ -1,5 +1,5 @@
 Registrationsystem
-This project is a system to register visitors.  
+This project is a system to register visitors.
 
 How it works:
 
@@ -20,17 +20,16 @@ Version control: GitHub
 File structure:
 
 frontend/
-index.html 
-script.js 
+index.html
+script.js
 backend/
-RegisterVisitor.cs 
-Visitor.cs 
-Program.cs 
-
+RegisterVisitor.cs
+Visitor.cs
+Program.cs
 
 How to test it:
 
- Open the GitHub Pages site.
+Open the GitHub Pages site.
 Type a name in the form.
 Click Send.
 If everything works you will see:  
