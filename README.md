@@ -25,7 +25,6 @@ script.js
 backend/
 RegisterVisitor.cs 
 Visitor.cs 
-VisitorService.cs 
 Program.cs 
 
 
