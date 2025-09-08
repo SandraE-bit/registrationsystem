@@ -24,7 +24,6 @@ index.html
 script.js
 backend/
 RegisterVisitor.cs
-Visitor.cs
 Program.cs
 
 How to test it:
